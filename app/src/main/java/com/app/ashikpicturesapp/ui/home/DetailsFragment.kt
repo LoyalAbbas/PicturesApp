@@ -17,14 +17,17 @@ import com.app.ashikpicturesapp.ui.home.model.PicInfo
 import com.app.ashikpicturesapp.ui.home.repository.MainListRepository
 import com.app.ashikpicturesapp.ui.home.viewmodel.MainListViewModel
 import com.app.ashikpicturesapp.ui.home.viewmodel.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 private const val SELECTED_POSITION = "position"
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment() {
     private lateinit var viewBinding : FragmentDetailsBinding
-    private var selectedPosition : Int = 0
-    private val homeListViewModel : MainListViewModel by activityViewModels { MainViewModelFactory(MainListRepository()) }
+    private final var selectedPosition : Int = 0
+    private val homeListViewModel : MainListViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -37,7 +40,9 @@ class DetailsFragment : Fragment() {
         var picListObserver = Observer<MutableList<PicInfo>>{
             var detailsAdapter = DetailsPagerAdapter(it)
             viewBinding.viewPager.adapter = detailsAdapter
-            viewBinding.viewPager.setCurrentItem(selectedPosition,true)
+            viewBinding.viewPager.post {
+                viewBinding.viewPager.setCurrentItem(selectedPosition,true)
+            }
         }
 
         homeListViewModel.picArrayList.observe(viewLifecycleOwner,picListObserver)

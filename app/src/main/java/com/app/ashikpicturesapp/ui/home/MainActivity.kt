@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.app.ashikpicturesapp.R
 import com.app.ashikpicturesapp.databinding.ActivityMainBinding
 import com.app.ashikpicturesapp.ui.home.adapter.MainListAdapter
@@ -13,13 +14,19 @@ import com.app.ashikpicturesapp.ui.home.model.PicInfo
 import com.app.ashikpicturesapp.ui.home.repository.MainListRepository
 import com.app.ashikpicturesapp.ui.home.viewmodel.MainListViewModel
 import com.app.ashikpicturesapp.ui.home.viewmodel.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), MainListAdapter.ItemClickListener {
     private lateinit var viewBinding : ActivityMainBinding
-    private val homeListViewModel : MainListViewModel by viewModels {MainViewModelFactory(MainListRepository())}
+
+    private val homeListViewModel : MainListViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+
         var picListObserver = Observer<MutableList<PicInfo>>{
             var adapter : MainListAdapter = MainListAdapter(it, this@MainActivity)
             viewBinding.rvPicList.adapter = adapter
