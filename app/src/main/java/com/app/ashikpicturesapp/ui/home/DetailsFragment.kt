@@ -1,38 +1,55 @@
 package com.app.ashikpicturesapp.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.app.ashikpicturesapp.R
+import com.app.ashikpicturesapp.databinding.FragmentDetailsBinding
+import com.app.ashikpicturesapp.ui.home.adapter.DetailsPagerAdapter
+import com.app.ashikpicturesapp.ui.home.model.PicInfo
+import com.app.ashikpicturesapp.ui.home.repository.MainListRepository
+import com.app.ashikpicturesapp.ui.home.viewmodel.MainListViewModel
+import com.app.ashikpicturesapp.ui.home.viewmodel.MainViewModelFactory
 
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
+private const val SELECTED_POSITION = "position"
 
 class DetailsFragment : Fragment() {
-
+    private lateinit var viewBinding : FragmentDetailsBinding
+    private var selectedPosition : Int = 0
+    private val homeListViewModel : MainListViewModel by activityViewModels { MainViewModelFactory(MainListRepository()) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
+            selectedPosition = it.getInt(SELECTED_POSITION)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_details, container, false)
+        viewBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_details, container, false)
+        var picListObserver = Observer<MutableList<PicInfo>>{
+            var detailsAdapter = DetailsPagerAdapter(it)
+            viewBinding.viewPager.adapter = detailsAdapter
+            viewBinding.viewPager.setCurrentItem(selectedPosition,true)
+        }
+
+        homeListViewModel.picArrayList.observe(viewLifecycleOwner,picListObserver)
+
+        return viewBinding.root
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DetailsFragment().apply {
+        fun newInstance(position: Int) = DetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putInt(SELECTED_POSITION, position)
                 }
             }
     }

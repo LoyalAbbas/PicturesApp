@@ -34,7 +34,6 @@
                 android:id="@+id/iv_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_launcher_background"
                 app:imageUrl="@{picInfo.url}"
                 app:context = "@{context}"
                 android:scaleType="fitXY"/>
