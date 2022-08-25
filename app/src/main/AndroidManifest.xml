@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AshikPicturesApp"
         tools:targetApi="31">
+        
         <activity
             android:name=".ui.home.MainActivity"
             android:exported="true">
